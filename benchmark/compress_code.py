@@ -50,6 +50,13 @@ def reconstruct_db(file_path, code_db):
     for topic in data:
         for entry in topic['knowledge']:
             content = entry['content']
+            first_newline = content.find('\n')
+            second_newline = content.find('\n\n', first_newline + 1)
+            if first_newline != -1 and second_newline != -1:
+                entry["summary"] = content[first_newline + 1:second_newline].strip()
+            else:
+                entry["summary"] = ""
+            entry["summary"] = entry["summary"].replace('#', '').replace('\n', ',').strip()
             entry['code_keys'] = []
             for key, value in code_db.items():
                 if f'```{value}```' in content:
